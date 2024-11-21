@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace YumBlazor.DTO
+namespace Project.DTO
 {
     public class CategoryReadOnlyDTO
     {

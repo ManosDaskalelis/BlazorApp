@@ -1,6 +1,6 @@
-﻿using YumBlazor.Data;
+﻿using Project.Data;
 
-namespace YumBlazor.Services.IServices
+namespace Project.Services.IServices
 {
     public interface IProductService
     {

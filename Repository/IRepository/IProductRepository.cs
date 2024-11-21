@@ -1,6 +1,6 @@
-﻿using YumBlazor.Data;
+﻿using Project.Data;
 
-namespace YumBlazor.Repository.IRepository
+namespace Project.Repository.IRepository
 {
     public interface IProductRepository
     {

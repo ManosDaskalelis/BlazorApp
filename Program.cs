@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using YumBlazor.Components;
-using YumBlazor.Components.Account;
-using YumBlazor.Data;
-using YumBlazor.Repository;
-using YumBlazor.Repository.IRepository;
-using YumBlazor.Services;
-using YumBlazor.Services.IServices;
+using Project.Components;
+using Project.Components.Account;
+using Project.Data;
+using Project.Repository;
+using Project.Repository.IRepository;
+using Project.Services;
+using Project.Services.IServices;
 
-namespace YumBlazor
+namespace Project
 {
     public class Program
     {

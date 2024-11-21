@@ -1,7 +1,7 @@
-﻿using YumBlazor.Data;
-using YumBlazor.DTO;
+﻿using Project.Data;
+using Project.DTO;
 
-namespace YumBlazor.Services.IServices
+namespace Project.Services.IServices
 {
     public interface ICategoryService
     {

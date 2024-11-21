@@ -1,7 +1,7 @@
-﻿using YumBlazor.Repository.IRepository;
-using YumBlazor.Services.IServices;
+﻿using Project.Repository.IRepository;
+using Project.Services.IServices;
 
-namespace YumBlazor.Services
+namespace Project.Services
 {
     public class ApplicationService: IApplicationService
     {

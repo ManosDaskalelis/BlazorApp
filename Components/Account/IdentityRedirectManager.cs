@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using System.Diagnostics.CodeAnalysis;
 
-namespace YumBlazor.Components.Account
+namespace Project.Components.Account
 {
     internal sealed class IdentityRedirectManager(NavigationManager navigationManager)
     {

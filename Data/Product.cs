@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace YumBlazor.Data
+namespace Project.Data
 {
     public class Product
     {

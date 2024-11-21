@@ -1,4 +1,4 @@
-﻿namespace YumBlazor.Enums
+﻿namespace Project.Enums
 {
     public enum Entities
     {

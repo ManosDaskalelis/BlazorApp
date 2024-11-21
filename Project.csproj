@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-YumBlazor-243221de-b481-47be-9cae-9631f0884e53</UserSecretsId>
+    <UserSecretsId>aspnet-Project-243221de-b481-47be-9cae-9631f0884e53</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="ViewModels\" />
     <Folder Include="wwwroot\images\products\" />
   </ItemGroup>

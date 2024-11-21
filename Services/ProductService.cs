@@ -1,8 +1,8 @@
-﻿using YumBlazor.Data;
-using YumBlazor.Repository.IRepository;
-using YumBlazor.Services.IServices;
+﻿using Project.Data;
+using Project.Repository.IRepository;
+using Project.Services.IServices;
 
-namespace YumBlazor.Services
+namespace Project.Services
 {
     public class ProductService : IProductService
     {

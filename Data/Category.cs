@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace YumBlazor.Data
+namespace Project.Data
 {
     public class Category
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Please enet")]
+        [Required(ErrorMessage = "Please enter a category name")]
         public string Name { get; set; }
     }
 }

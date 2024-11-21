@@ -1,7 +1,7 @@
-﻿using YumBlazor.Data;
-using YumBlazor.Repository.IRepository;
+﻿using Project.Data;
+using Project.Repository.IRepository;
 
-namespace YumBlazor.Repository
+namespace Project.Repository
 {
     public class UnitOfWork: IUnitOfWork
     {

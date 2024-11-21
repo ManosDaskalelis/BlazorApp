@@ -1,4 +1,4 @@
-﻿namespace YumBlazor.Repository.IRepository
+﻿namespace Project.Repository.IRepository
 {
     public interface IUnitOfWork
     {
