@@ -6,7 +6,7 @@ namespace Project.Data
     public class Product
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please enter a product name")]
         public string Name { get; set; }
         [Range(0.01, 1000)]
         public decimal Price { get; set; }

@@ -1,6 +1,6 @@
 ﻿@page "/product"
 @using System.Globalization
-@inject IApplicationService _AppService
+@inject IUnitOfWork _unitOfWork
 @inject IJSRuntime _JS
 @inject NavigationManager _navigationManager
 
@@ -53,7 +53,7 @@ else
                                     @prod.Price.ToString("C", CultureInfo.GetCultureInfo("en-eu"))
                                 </td>
                                 <td>
-                                    @prod.SpecialTag
+                                    <span class="badge text-bg-info">@prod.SpecialTag</span>
                                 </td>
                                 <td>
                                     @prod.Category.Name
@@ -92,7 +92,7 @@ else
 
     private async Task LoadCategories()
     {
-        Products = await _AppService.ProductService.GetAll();
+        Products = await _unitOfWork.ProductRepository.GetAll();
     }
 
     private void HandleDelete(int id)
@@ -108,7 +108,7 @@ else
         if (isConfirmed && DeleteProductId != 0)
         {
             
-            var result = await _AppService.ProductService.DeleteAsync(DeleteProductId);
+            var result = await _unitOfWork.ProductRepository.DeleteAsync(DeleteProductId);
             if (result)
             {
                 _JS?.ToastrSuccess("Product Delete Successfully");

@@ -18,6 +18,9 @@ namespace Project.Data
                 new Category { Id = 2, Name = "Entree" },
                 new Category { Id = 3, Name = "Dessert" }
                 );
+            builder.Entity<Product>().HasData(
+               new Product { Id = 1, Name = "Prod1", CategoryId = 1 }
+               );
         }
     }
 }

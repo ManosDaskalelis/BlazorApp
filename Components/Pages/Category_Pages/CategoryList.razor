@@ -1,5 +1,5 @@
 ﻿@page "/category"
-@inject IApplicationService _AppService
+@inject IUnitOfWork _unitOfWork
 @inject IJSRuntime _JS
 @inject NavigationManager _navigationManager
 
@@ -65,7 +65,7 @@ else
 @code {
     private bool isProcessing { get; set; } = true;
     private int DeleteCategoryId { get; set; } = 0;
-    private IEnumerable<CategoryReadOnlyDTO> Categories { get; set; } = new List<CategoryReadOnlyDTO>();
+    private IEnumerable<Category> Categories { get; set; } = new List<Category>();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -79,7 +79,7 @@ else
 
     private async Task LoadCategories()
     {
-        Categories = await _AppService.CategoryService.GetAll();
+        Categories = await _unitOfWork.CategoryRepository.GetAll();
     }
 
     private void HandleDelete(int id)
@@ -95,7 +95,7 @@ else
         if (isConfirmed && DeleteCategoryId != 0)
         {
             
-            var result = await _AppService.CategoryService.DeleteAsync(DeleteCategoryId);
+            var result = await _unitOfWork.CategoryRepository.DeleteAsync(DeleteCategoryId);
             if (result)
             {
                 _JS?.ToastrSuccess("Category Delete Successfully");

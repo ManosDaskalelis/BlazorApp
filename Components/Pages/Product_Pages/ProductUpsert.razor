@@ -1,6 +1,6 @@
 ﻿@page "/product/create"
 @page "/product/update/{id:int}"
-@inject IApplicationService _AppService;
+@inject IUnitOfWork _unitOfWork;
 @inject NavigationManager _navigationManager
 @inject IJSRuntime _JS
 @inject IWebHostEnvironment _webHostEnvironment
@@ -39,6 +39,11 @@ else
                         <ValidationMessage For="@(() => Product.Description)" />
                     </div>
 
+                    <div class="form-floating py-3 col-12">
+                        <InputText @bind-Value="Product.SpecialTag" class="form-control" id="SpecialTag" placeholder="SpecialTag" />
+                        <label for="SpecialTag">Special Tag</label>
+                        <ValidationMessage For="@(() => Product.SpecialTag)" />
+                    </div>
 
                     <div class="form-floating py-3 col-12">
                         <InputNumber @bind-Value="Product.Price" class="form-control" id="Price" placeholder="Price" />
@@ -100,7 +105,7 @@ else
     private string Action { get; set; } = Actions.Create.ToString();
     private string Entity { get; set; }
     private string Url;
-    private IEnumerable<CategoryReadOnlyDTO> _categories = new List<CategoryReadOnlyDTO>();
+    private IEnumerable<Category> _categories = new List<Category>();
 
     [Parameter]
     public int Id { get; set; }
@@ -156,9 +161,9 @@ else
     {
         if (Id > 0)
         {
-            Product = await _AppService.ProductService.GetById(Id);
+            Product = await _unitOfWork.ProductRepository.GetById(Id);
         }
-        _categories = await _AppService.CategoryService.GetAll();
+        _categories = await _unitOfWork.CategoryRepository.GetAll();
     }
 
     private async Task ProductActions()
@@ -166,12 +171,12 @@ else
         IsProcessing = true;
         if (Product.Id == 0)
         {
-            await _AppService.ProductService.Create(Product);
+            await _unitOfWork.ProductRepository.Create(Product);
             await _JS.ToastrSuccess("Product Created Successfully");
         }
         else
         {
-            await _AppService.ProductService.Update(Product);
+            await _unitOfWork.ProductRepository.Update(Product);
             await _JS.ToastrSuccess("Product Updated Successfully");
         }
         IsProcessing = false;

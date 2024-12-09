@@ -1,6 +1,6 @@
 ﻿@page "/category/create"
 @page "/category/update/{id:int}"
-@inject IApplicationService _AppService;
+@inject IUnitOfWork _unitOfWork;
 @inject NavigationManager _navigationManager
 @inject IJSRuntime _JS
 
@@ -57,7 +57,7 @@ else
 
 
     [SupplyParameterFromForm]
-    private CategoryReadOnlyDTO Category { get; set; } = new CategoryReadOnlyDTO();
+    private Category Category { get; set; } = new Category();
 
     private bool isProcessing { get; set; } = true;
 
@@ -75,7 +75,7 @@ else
     {
         if (Id > 0)
         {
-            Category = await _AppService.CategoryService.GetById(Id);
+            Category = await _unitOfWork.CategoryRepository.GetById(Id);
         }
     }
 
@@ -86,21 +86,13 @@ else
 
         if (Category.Id == 0)
         {
-            var categoryToAdd = new CategoryInsertDTO
-                {
-                    Name = Category.Name
-                };
-            await _AppService.CategoryService.Create(categoryToAdd);
+            await _unitOfWork.CategoryRepository.Create(Category);
             await _JS.ToastrSuccess("Category Created Successfully");
         }
         else
         {
-            var categoryToUpdate = new CategoryUpdateDTO
-                {
-                    Id = Category.Id,
-                    Name = Category.Name
-                };
-            await _AppService.CategoryService.Update(categoryToUpdate);
+            
+            await _unitOfWork.CategoryRepository.Update(Category);
             await _JS.ToastrSuccess("Category Updated Successfully");
 
         }

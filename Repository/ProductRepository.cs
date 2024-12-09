@@ -7,10 +7,12 @@ namespace Project.Repository
     public class ProductRepository : IProductRepository
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductRepository(ApplicationDbContext dbContext)
+        public ProductRepository(ApplicationDbContext dbContext, IWebHostEnvironment webHostEnvironment)
         {
             _dbContext = dbContext;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<Product> Create(Product prod)
@@ -23,6 +25,13 @@ namespace Project.Repository
         public async Task<bool> DeleteAsync(int id)
         {
             var obj = await _dbContext.Product.FirstOrDefaultAsync(u => u.Id == id);
+            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('/'));
+
+            if (File.Exists(imagePath))
+            {
+                File.Delete(imagePath);
+            }
+
             if (obj != null)
             {
                 _dbContext.Product.Remove(obj);
@@ -52,6 +61,10 @@ namespace Project.Repository
             if (entityToUpdate != null)
             {
                 entityToUpdate.Name = prod.Name;
+                entityToUpdate.ImageUrl = prod.ImageUrl;
+                entityToUpdate.Price = prod.Price;
+                entityToUpdate.SpecialTag = prod.SpecialTag;
+                entityToUpdate.CategoryId = prod.CategoryId;
                 _dbContext.Product.Update(entityToUpdate);
                 return entityToUpdate;
             }

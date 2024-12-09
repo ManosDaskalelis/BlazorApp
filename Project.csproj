@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\images\products\**" />
+    <Content Remove="wwwroot\images\products\**" />
+    <EmbeddedResource Remove="wwwroot\images\products\**" />
+    <None Remove="wwwroot\images\products\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\js\notification.js" />
   </ItemGroup>
 
@@ -22,7 +29,6 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="wwwroot\images\products\" />
   </ItemGroup>
 
 </Project>

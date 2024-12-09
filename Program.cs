@@ -7,7 +7,6 @@ using Project.Data;
 using Project.Repository;
 using Project.Repository.IRepository;
 using Project.Services;
-using Project.Services.IServices;
 
 namespace Project
 {
@@ -26,7 +25,6 @@ namespace Project
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
             builder.Services.AddAuthentication(options =>
                 {
