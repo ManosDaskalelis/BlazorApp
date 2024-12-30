@@ -1,4 +1,4 @@
-﻿@page "/category"
+﻿ @page "/category"
 @inject IUnitOfWork _unitOfWork
 @inject IJSRuntime _JS
 @inject NavigationManager _navigationManager
@@ -79,7 +79,7 @@ else
 
     private async Task LoadCategories()
     {
-        Categories = await _unitOfWork.CategoryRepository.GetAll();
+        Categories = await _unitOfWork.CategoryRepository.GetAllAsync();
     }
 
     private void HandleDelete(int id)
@@ -94,20 +94,16 @@ else
         await _JS.InvokeVoidAsync("HideConfirmationModal");
         if (isConfirmed && DeleteCategoryId != 0)
         {
-            
             var result = await _unitOfWork.CategoryRepository.DeleteAsync(DeleteCategoryId);
             if (result)
-            {
                 _JS?.ToastrSuccess("Category Delete Successfully");
-            }
             else
-            {
-                _JS?.ToastrError("Error while deleting");
-            }
+                _JS?.ToastrError("Error Encountered while deleting");
+
             await LoadCategories();
         }
+
         DeleteCategoryId = 0;
         isProcessing = false;
-
     }
 }

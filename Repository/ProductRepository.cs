@@ -18,6 +18,7 @@ namespace Project.Repository
         public async Task<Product> Create(Product prod)
         {
             var prodToReturn = await _dbContext.AddAsync(prod);
+            await _dbContext.SaveChangesAsync();
             return prodToReturn.Entity;
 
         }
@@ -25,19 +26,26 @@ namespace Project.Repository
         public async Task<bool> DeleteAsync(int id)
         {
             var obj = await _dbContext.Product.FirstOrDefaultAsync(u => u.Id == id);
-            var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('/'));
 
-            if (File.Exists(imagePath))
+            if (obj == null)
             {
-                File.Delete(imagePath);
+                return false;
             }
 
-            if (obj != null)
+            if (!string.IsNullOrEmpty(obj.ImageUrl))
             {
-                _dbContext.Product.Remove(obj);
-                return true;
+                var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, obj.ImageUrl.TrimStart('/'));
+
+                if (File.Exists(imagePath))
+                {
+                    File.Delete(imagePath);
+                }
+
             }
-            return false;
+            _dbContext.Product.Remove(obj);
+            await _dbContext.SaveChangesAsync();
+            return true;
+
         }
 
         public async Task<IEnumerable<Product>> GetAll()
@@ -66,8 +74,10 @@ namespace Project.Repository
                 entityToUpdate.SpecialTag = prod.SpecialTag;
                 entityToUpdate.CategoryId = prod.CategoryId;
                 _dbContext.Product.Update(entityToUpdate);
+                await _dbContext.SaveChangesAsync();
                 return entityToUpdate;
             }
+            await _dbContext.SaveChangesAsync();
             return new Product();
         }
     }

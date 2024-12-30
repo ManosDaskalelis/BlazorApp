@@ -163,7 +163,7 @@ else
         {
             Product = await _unitOfWork.ProductRepository.GetById(Id);
         }
-        _categories = await _unitOfWork.CategoryRepository.GetAll();
+        _categories = await _unitOfWork.CategoryRepository.GetAllAsync();
     }
 
     private async Task ProductActions()

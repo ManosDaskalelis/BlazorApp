@@ -75,7 +75,7 @@ else
     {
         if (Id > 0)
         {
-            Category = await _unitOfWork.CategoryRepository.GetById(Id);
+            Category = await _unitOfWork.CategoryRepository.GetAsync(Id);
         }
     }
 
@@ -86,13 +86,13 @@ else
 
         if (Category.Id == 0)
         {
-            await _unitOfWork.CategoryRepository.Create(Category);
+            await _unitOfWork.CategoryRepository.CreateAsync(Category);
             await _JS.ToastrSuccess("Category Created Successfully");
         }
         else
         {
             
-            await _unitOfWork.CategoryRepository.Update(Category);
+            await _unitOfWork.CategoryRepository.UpdateAsync(Category);
             await _JS.ToastrSuccess("Category Updated Successfully");
 
         }

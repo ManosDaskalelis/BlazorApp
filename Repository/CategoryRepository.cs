@@ -6,56 +6,57 @@ namespace Project.Repository
 {
     public class CategoryRepository : ICategoryRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _db;
 
         public CategoryRepository(ApplicationDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _db = dbContext;
         }
 
-        public async Task<Category> Create(Category cat)
+        public async Task<Category> CreateAsync(Category obj)
         {
-            var catToReturn = await _dbContext.AddAsync(cat);
-            return catToReturn.Entity;
-
+            await _db.Category.AddAsync(obj);
+            await _db.SaveChangesAsync();
+            return obj;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var obj = await _dbContext.Category.FirstOrDefaultAsync(u => u.Id == id);
+            var obj = await _db.Category.FirstOrDefaultAsync(u => u.Id == id);
             if (obj != null)
             {
-                _dbContext.Category.Remove(obj);
-                return true;
+                _db.Category.Remove(obj);
+                return (await _db.SaveChangesAsync()) > 0;
             }
             return false;
         }
 
-        public async Task<IEnumerable<Category>> GetAll()
+        public async Task<Category> GetAsync(int id)
         {
-            return await _dbContext.Category.ToListAsync();
-        }
-
-        public async Task<Category> GetById(int id)
-        {
-            var catToReturn = await _dbContext.Category.FirstOrDefaultAsync(c => c.Id == id);
-            if (catToReturn == null)
+            var obj = await _db.Category.FirstOrDefaultAsync(u => u.Id == id);
+            if (obj == null)
             {
                 return new Category();
             }
-            return catToReturn;
+            return obj;
         }
 
-        public async Task<Category> Update(Category cat)
+        public async Task<IEnumerable<Category>> GetAllAsync()
         {
-            var entityToUpdate = await _dbContext.Category.FirstOrDefaultAsync(x => x.Id == cat.Id);
-            if (entityToUpdate != null)
+            return await _db.Category.ToListAsync();
+        }
+
+        public async Task<Category> UpdateAsync(Category obj)
+        {
+            var objFromDb = await _db.Category.FirstOrDefaultAsync(u => u.Id == obj.Id);
+            if (objFromDb is not null)
             {
-                entityToUpdate.Name = cat.Name;
-                _dbContext.Category.Update(entityToUpdate);
-                return entityToUpdate;
+                objFromDb.Name = obj.Name;
+                _db.Category.Update(objFromDb);
+                await _db.SaveChangesAsync();
+                return objFromDb;
             }
-            return new Category();
+            return obj;
         }
     }
 }
