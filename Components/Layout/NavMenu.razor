@@ -2,6 +2,78 @@
 
 @inject NavigationManager NavigationManager
 
+<div class="d-flex flex-column vh-100">
+    <div class="d-flex flex-column bg-dark text-light shadow-sm" style="width: 250px;">
+        <div class="navbar-brand fw-bold p-3 text-warning">Project</div>
+        <nav class="nav flex-column nav-pills">
+            <NavLink class="nav-link text-light d-flex align-items-center" href="">
+                <i class="bi bi-house-door me-2"></i> Home
+            </NavLink>
+            <NavLink class="nav-link text-light d-flex align-items-center" href="category">
+                <i class="bi bi-list-check me-2"></i> Category
+            </NavLink>
+            <NavLink class="nav-link text-light d-flex align-items-center" href="product">
+                <i class="bi bi-box-seam me-2"></i> Product
+            </NavLink>
+            <NavLink class="nav-link text-light d-flex align-items-center" href="auth">
+                <i class="bi bi-lock me-2"></i> Auth Required
+            </NavLink>
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink class="nav-link text-light d-flex align-items-center" href="Account/Manage">
+                        <i class="bi bi-person me-2"></i> @context.User.Identity?.Name
+                    </NavLink>
+                    <form action="Account/Logout" method="post" class="p-0">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <button type="submit" class="nav-link text-light border-0 bg-transparent d-flex align-items-center">
+                            <i class="bi bi-box-arrow-left me-2"></i> Logout
+                        </button>
+                    </form>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="nav-link text-light d-flex align-items-center" href="Account/Register">
+                        <i class="bi bi-person-plus me-2"></i> Register
+                    </NavLink>
+                    <NavLink class="nav-link text-light d-flex align-items-center" href="Account/Login">
+                        <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                    </NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </nav>
+    </div>
+    <div class="flex-grow-1 p-4">
+        <!-- Main content goes here -->
+    </div>
+</div>
+
+@code {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}
+
+
+
+@* @implements IDisposable
+
+@inject NavigationManager NavigationManager
+
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Project</a>
@@ -90,3 +162,4 @@
     }
 }
 
+ *@
