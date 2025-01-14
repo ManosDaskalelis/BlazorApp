@@ -1,18 +1,21 @@
-﻿@inherits LayoutComponentBase
+﻿@using Project.Utility
+@inherits LayoutComponentBase
+
+@inject AuthenticationStateProvider AuthenticationStateProvider;
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    <AuthorizeView Roles="@Roles.Admin">
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+    </AuthorizeView>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
+        @if (isNavActive)
+        {
+            <NavBar></NavBar>
+        }
+        @Body
     </main>
 </div>
 
@@ -21,3 +24,43 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    private bool isNavActive;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isNavActive = await ShowNavBar();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        isNavActive = await ShowNavBar();
+    }
+
+    private async Task<bool> ShowNavBar()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
+
+        if (!authenticated)
+        {
+            return true;
+        }
+
+        if (!user.IsInRole(Roles.Admin))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private int MathCustomPow(int num, int pow) {
+        for (int i = 0; i <= pow; i++) {
+            num *= num;
+        };
+        return num;
+    }
+}
