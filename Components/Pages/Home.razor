@@ -1,10 +1,14 @@
 ﻿@page "/"
 @using System.Globalization;
 @inject IUnitOfWork unitOfWork;
+@inject AuthenticationStateProvider _AuthenticationStateProvider
+@inject IJSRuntime _IJSRuntime
+@inject NavigationManager _NavigationManager
+@inject StateService _StateService
 
 <PageTitle>Home</PageTitle>
 
-@if (isProcessing)
+@if (IsProcessing)
 {
     <div class="position-absolute w-100 vh-100 d-flex flex-column align-items-center bg-white justify-content-center">
         <img src="/images/loading.gif" alt="loading" />
@@ -20,9 +24,9 @@ else
 
                 <div class="d-flex align-items-center" style="width: 100%;">
                     <input type="text" class="form-control rounded-pill"
-                           @bind:event="oninput" @bind:get="searchInput" @bind:set="FilterProductsByName"
-                           placeholder="Search for items!"
-                           style="width: 100%; padding: 20px;">
+                    @bind:event="oninput" @bind:get="searchInput" @bind:set="FilterProductsByName"
+                    placeholder="Search for items!"
+                    style="width: 100%; padding: 20px;">
                     <span style="position: relative; left: -43px;"><i class="bi bi-search"></i></span>
                 </div>
             </div>
@@ -71,7 +75,9 @@ else
                                 <h5 class="card-title text-center lead text-success">@prod.Name</h5>
                                 <p class="card-text mt-2">@((MarkupString)prod.Description)</p>
                                 <h4 class="text-center">
-                                    <i class="bi bi-cart3 btn btn-success text-right px-5 form-control"> Add to cart</i>
+                                    <div class="m-lg-auto p-2" @onclick="() => AddOrder(prod)">
+                                        <i class="bi bi-cart3 btn btn-success text-right px-5 form-control"> Add to cart</i>
+                                    </div>
                                 </h4>
 
                             </div>
@@ -87,7 +93,7 @@ else
     private IEnumerable<Product> Products = new List<Product>();
     private IEnumerable<Product> FilteredProducts = new List<Product>();
     private IEnumerable<Category> Categories = new List<Category>();
-    private bool isProcessing { get; set; } = true;
+    private bool IsProcessing { get; set; } = true;
     private int catId = 0;
     private string searchInput = "";
 
@@ -96,7 +102,7 @@ else
         if (firstRender)
         {
             await LoadProducts();
-            isProcessing = false;
+            IsProcessing = false;
             StateHasChanged();
         }
     }
@@ -140,6 +146,32 @@ else
 
     private string ActiveTab(int categoryId)
     {
-        return categoryId == catId ? "active" : string.Empty; 
+        return categoryId == catId ? "active" : string.Empty;
+    }
+
+    private async Task AddOrder(Product product)
+    {
+        var authState = await _AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
+
+        if (!authenticated)
+        {
+            _NavigationManager.NavigateTo("account/login");
+        }
+        else 
+        {
+            var userId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+            var result = await unitOfWork.CartRepository.UpdateCartAsync(userId, product.Id, 1);
+            _StateService.TotalCartCount = await unitOfWork.CartRepository.GetTotalCountAsync(userId);
+            if (result)
+            {
+                _IJSRuntime?.ToastrSuccess("Product added to cart successfully");
+            }
+            else
+            {
+                _IJSRuntime?.ToastrError("Error encountered");
+            }
+        }
     }
 }

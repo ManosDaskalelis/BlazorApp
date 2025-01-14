@@ -16,6 +16,7 @@ namespace Project.Repository
 
         public CategoryRepository CategoryRepository => new(_context);
         public ProductRepository ProductRepository => new(_context, _webHostEnvironment);
+        public CartRepository CartRepository => new(_context);
 
         public async Task<bool> SaveAsync()
         {
