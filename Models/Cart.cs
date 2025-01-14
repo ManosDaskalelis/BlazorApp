@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Project.Data;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Project.Data
+namespace Project.Models
 {
     public class Cart
     {

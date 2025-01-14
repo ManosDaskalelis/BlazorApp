@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.Data;
+using Project.Models;
 using Project.Repository.IRepository;
 
 namespace Project.Repository

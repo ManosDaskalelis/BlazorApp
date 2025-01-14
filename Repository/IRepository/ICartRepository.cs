@@ -1,4 +1,4 @@
-﻿using Project.Data;
+﻿using Project.Models;
 
 namespace Project.Repository.IRepository
 {

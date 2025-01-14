@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Project.Data;
+using Project.Models;
 using Project.Repository.IRepository;
 
 namespace Project.Repository
@@ -45,7 +46,7 @@ namespace Project.Repository
         }
 
 
-        public async Task<IEnumerable<Data.Cart>> GetAllAsync(string? userId)
+        public async Task<IEnumerable<Cart>> GetAllAsync(string? userId)
         {
             return await _dbContext.Cart.Where(u => u.UserId == userId).Include(u => u.Product).ToListAsync();
         }
