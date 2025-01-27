@@ -1,9 +1,12 @@
 ﻿@page "/cart"
 @using System.Globalization
 @using Microsoft.AspNetCore.Authorization
-@inject IUnitOfWork unitOfWork;
-@inject AuthenticationStateProvider _AuthenticationStateProvider
-@inject NavigationManager _NavigationManager
+@using Project.Utility
+@inject IUnitOfWork _unitOfWork;
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject NavigationManager _navigationManager
+
+
 @attribute [Authorize]
 @if (IsProcessing)
 {
@@ -129,10 +132,11 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await _AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         OrderHeader.Email = user.FindFirst(u => u.Type.Contains("email"))?.Value;
         OrderHeader.UserId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
+        OrderHeader.Status = OrderStatus.Pending.ToString();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -149,7 +153,7 @@ else
 
     private async Task LoadCart()
     {
-        Carts = await unitOfWork.CartRepository.GetAllAsync(OrderHeader.UserId);
+        Carts = await _unitOfWork.CartRepository.GetAllAsync(OrderHeader.UserId);
 
         OrderHeader.OrderTotal = 0;
         TotalItems = 0;
@@ -164,9 +168,9 @@ else
 
     private async Task UpdateCart(int productId, int updateCount)
     {
-        var result = await unitOfWork.CartRepository.UpdateCartAsync(OrderHeader.UserId, productId, updateCount);
+        var result = await _unitOfWork.CartRepository.UpdateCartAsync(OrderHeader.UserId, productId, updateCount);
 
-        var total = await unitOfWork.CartRepository.GetAllAsync(OrderHeader.UserId);
+        var total = await _unitOfWork.CartRepository.GetAllAsync(OrderHeader.UserId);
 
         foreach (var item in total)
         {
@@ -186,17 +190,22 @@ else
 
     private async Task ClearCart(int productId)
     {
-        var result = await unitOfWork.CartRepository.ClearCartAsync(OrderHeader.UserId, productId);
+        var result = await _unitOfWork.CartRepository.ClearCartAsync(OrderHeader.UserId, productId);
         await LoadCart();
     }
 
     private async Task CreateOrder()
     {
+        IsProcessing = true;
+        await Task.Yield();
+        OrderHeader.OrderDetails = Mapper.ConvertToOrderDetail(Carts.ToList());
 
+        await _unitOfWork.OrderRepository.CreateOrderAsync(OrderHeader);
+        _navigationManager.NavigateTo($"/order/confirmation/{OrderHeader.Id}");
     }
 
     private async Task Abort()
     {
-        _NavigationManager.NavigateTo("/");
+        _navigationManager.NavigateTo("/");
     }
 }

@@ -1,10 +1,10 @@
 ﻿@page "/"
 @using System.Globalization;
 @using Project.Models;
-@inject IUnitOfWork unitOfWork;
-@inject AuthenticationStateProvider _AuthenticationStateProvider
+@inject IUnitOfWork _unitOfWork;
+@inject AuthenticationStateProvider _authenticationStateProvider
 @inject IJSRuntime _IJSRuntime
-@inject NavigationManager _NavigationManager
+@inject NavigationManager _navigationManager
 @inject StateService _StateService
 
 <PageTitle>Home</PageTitle>
@@ -110,8 +110,8 @@ else
 
     private async Task LoadProducts()
     {
-        Products = await unitOfWork.ProductRepository.GetAll();
-        Categories = await unitOfWork.CategoryRepository.GetAllAsync();
+        Products = await _unitOfWork.ProductRepository.GetAll();
+        Categories = await _unitOfWork.CategoryRepository.GetAllAsync();
         FilterProducts(0);
     }
 
@@ -152,19 +152,19 @@ else
 
     private async Task AddOrder(Product product)
     {
-        var authState = await _AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
 
         if (!authenticated)
         {
-            _NavigationManager.NavigateTo("account/login");
+            _navigationManager.NavigateTo("account/login");
         }
         else 
         {
             var userId = user.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value;
-            var result = await unitOfWork.CartRepository.UpdateCartAsync(userId, product.Id, 1);
-            _StateService.TotalCartCount = await unitOfWork.CartRepository.GetTotalCountAsync(userId);
+            var result = await _unitOfWork.CartRepository.UpdateCartAsync(userId, product.Id, 1);
+            _StateService.TotalCartCount = await _unitOfWork.CartRepository.GetTotalCountAsync(userId);
             if (result)
             {
                 _IJSRuntime?.ToastrSuccess("Product added to cart successfully");

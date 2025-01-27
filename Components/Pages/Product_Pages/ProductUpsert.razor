@@ -4,6 +4,7 @@
 @inject NavigationManager _navigationManager
 @inject IJSRuntime _JS
 @inject IWebHostEnvironment _webHostEnvironment
+@using System.IO
 
 
 @if (IsProcessing)
@@ -187,7 +188,7 @@ else
     {
         IsProcessing = true;
         var file = e.File;
-        System.IO.FileInfo fileInfo = new(file.Name);
+        FileInfo fileInfo = new(file.Name);
         var newFileName = $"{Guid.NewGuid()}.{fileInfo.Extension}";
         if (!Directory.Exists(_directoryPath))
         {

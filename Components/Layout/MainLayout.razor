@@ -1,7 +1,7 @@
 ﻿@using Project.Utility
 @inherits LayoutComponentBase
 
-@inject AuthenticationStateProvider _AuthenticationStateProvider;
+@inject AuthenticationStateProvider _authenticationStateProvider;
 
 <div class="page">
     <AuthorizeView Roles="@Roles.Admin">
@@ -40,7 +40,7 @@
 
     private async Task<bool> ShowNavBar()
     {
-        var authState = await _AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         var authenticated = user.Identity is not null && user.Identity.IsAuthenticated;
 
