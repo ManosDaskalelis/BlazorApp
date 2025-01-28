@@ -104,10 +104,10 @@
 
         Logger.LogInformation("User created a new account with password.");
 
-        if (!await RoleManager.RoleExistsAsync(Roles.Customer))
+        if (!await RoleManager.RoleExistsAsync(Roles.Customer.ToString()))
         {
-            await RoleManager.CreateAsync(new IdentityRole(Roles.Admin));
-            await RoleManager.CreateAsync(new IdentityRole(Roles.Customer));
+            await RoleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
+            await RoleManager.CreateAsync(new IdentityRole(Roles.Customer.ToString()));
         }
 
         if (Input.Role is not null)
@@ -116,7 +116,7 @@
         }
         else
         {
-            await UserManager.AddToRoleAsync(user, Roles.Customer);
+            await UserManager.AddToRoleAsync(user, Roles.Customer.ToString());
         }
 
         var userId = await UserManager.GetUserIdAsync(user);

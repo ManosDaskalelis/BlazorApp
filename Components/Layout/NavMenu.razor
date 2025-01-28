@@ -6,17 +6,19 @@
     <div class="d-flex flex-column bg-dark text-light shadow-sm" style="width: 250px;">
         <div class="navbar-brand fw-bold p-3 text-warning">Project</div>
         <nav class="nav flex-column nav-pills">
-            <NavLink class="nav-link text-light d-flex align-items-center" href="/" Match="NavLinkMatch.All">
-                <i class="bi bi-house-door me-2"></i> Home
-            </NavLink>
+            <div class="">
+                <NavLink class="nav-link text-light d-flex align-items-center" href="/" Match="NavLinkMatch.All">
+                    <i class="bi bi-house-door me-2"></i> Home
+                </NavLink>
+            </div>
             <NavLink class="nav-link text-light d-flex align-items-center" href="category">
                 <i class="bi bi-list-check me-2"></i> Category
             </NavLink>
             <NavLink class="nav-link text-light d-flex align-items-center" href="product">
                 <i class="bi bi-box-seam me-2"></i> Product
             </NavLink>
-            <NavLink class="nav-link text-light d-flex align-items-center" href="auth">
-                <i class="bi bi-lock me-2"></i> Auth Required
+            <NavLink class="nav-link text-light" href="/order/list">
+                <i class="bi bi-card-list"></i> Order List
             </NavLink>
             <AuthorizeView>
                 <Authorized>

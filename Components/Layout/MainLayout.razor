@@ -4,7 +4,7 @@
 @inject AuthenticationStateProvider _authenticationStateProvider;
 
 <div class="page">
-    <AuthorizeView Roles="@Roles.Admin">
+    <AuthorizeView Roles="@Roles.Admin.ToString()">
         <div class="sidebar">
             <NavMenu />
         </div>
@@ -49,7 +49,7 @@
             return true;
         }
 
-        if (!user.IsInRole(Roles.Admin))
+        if (!user.IsInRole(Roles.Admin.ToString()))
         {
             return true;
         }
