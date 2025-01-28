@@ -22,9 +22,9 @@
             </NavLink>
             <AuthorizeView>
                 <Authorized>
-                    <NavLink class="nav-link text-light d-flex align-items-center" href="Account/Manage">
-                        <i class="bi bi-person me-2"></i> @context.User.Identity?.Name
-                    </NavLink>
+                    @* <NavLink class="nav-link text-light d-flex align-items-center" href="Account/Manage"> *@
+                    @*     <i class="bi bi-person me-2"></i> @context.User.Identity?.Name *@
+                    @* </NavLink> *@
                     <form action="Account/Logout" method="post" class="p-0">
                         <AntiforgeryToken />
                         <input type="hidden" name="ReturnUrl" value="@currentUrl" />

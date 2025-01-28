@@ -1,6 +1,8 @@
 ﻿@page "/order/details/{Id:int}"
 @using System.Globalization
 @inject IUnitOfWork _unitOfWork
+@inject IJSRuntime _IJSRuntime
+@inject AuthenticationStateProvider _authenticationStateProvier
 
 @if (IsProcessing)
 {
@@ -57,21 +59,20 @@ else
                         <a href="order/list" class="btn btn-secondary  m-2 p-2" style="width:150px;">Back to Orders</a>
                     </div>
                     <div class="col-7 text-end">
-                  @*       @if (OrderHeader.Status != SD.StatusCancelled && OrderHeader.Status != SD.StatusCompleted
-                       && _AuthenticationStateProvider.GetAuthenticationStateAsync().GetAwaiter().GetResult().User?.IsInRole(SD.Role_Admin) == true
-                       )
+                        @if (OrderHeader.Status != OrderStatus.Cancelled.ToString() && OrderHeader.Status != OrderStatus.Completed.ToString()
+                       && _authenticationStateProvier.GetAuthenticationStateAsync().GetAwaiter().GetResult().User?.IsInRole(Roles.Admin.ToString()) == true)
                         {
-                            <button class="btn btn-danger m-2 p-2" @onclick="()=>UpdateStatus(SD.StatusCancelled)" style="width:150px;">Cancel Order</button>
+                            <button class="btn btn-danger m-2 p-2" @onclick="()=>UpdateStatus(OrderStatus.Cancelled.ToString())" style="width:150px;">Cancel Order</button>
 
-                            @if (OrderHeader.Status == SD.StatusApproved)
+                            @if (OrderHeader.Status == OrderStatus.Pending.ToString())
                             {
-                                <button class="btn btn-primary m-2 p-2" @onclick="()=>UpdateStatus(SD.StatusReadyForPickUp)" style="width:150px;">Ready for Pickup</button>
+                                <button class="btn btn-primary m-2 p-2" @onclick="()=>UpdateStatus(OrderStatus.ReadyForPickUp.ToString())" style="width:150px;">Ready for Pickup</button>
                             }
-                            @if (OrderHeader.Status == SD.StatusReadyForPickUp)
+                            @if (OrderHeader.Status == OrderStatus.ReadyForPickUp.ToString())
                             {
-                                <button class="btn btn-success m-2 p-2" @onclick="()=>UpdateStatus(SD.StatusCompleted)" style="width:150px;">Completed</button>
+                                <button class="btn btn-success m-2 p-2" @onclick="()=>UpdateStatus(OrderStatus.Completed.ToString())" style="width:150px;">Completed</button>
                             }
-                        } *@
+                        }
                     </div>
                 </div>
             </div>
@@ -108,5 +109,11 @@ else
     private async Task LoadOrder()
     {
         OrderHeader = await _unitOfWork.OrderRepository.GetOrderAsync(Id);
+    }
+
+    private async Task UpdateStatus(string status)
+    {
+        await _unitOfWork.OrderRepository.UpdateStatusAsync(Id, status);
+        _IJSRuntime?.ToastrSuccess("Status updated successfully " + status);
     }
 }
