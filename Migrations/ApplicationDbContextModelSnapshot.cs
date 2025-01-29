@@ -220,7 +220,7 @@ namespace Project.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Project.Data.Cart", b =>
+            modelBuilder.Entity("Project.Models.Cart", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -247,7 +247,7 @@ namespace Project.Migrations
                     b.ToTable("Cart");
                 });
 
-            modelBuilder.Entity("Project.Data.Category", b =>
+            modelBuilder.Entity("Project.Models.Category", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -286,7 +286,79 @@ namespace Project.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Project.Data.Product", b =>
+            modelBuilder.Entity("Project.Models.OrderDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderHeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderHeaderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetail");
+                });
+
+            modelBuilder.Entity("Project.Models.OrderHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double>("OrderTotal")
+                        .HasColumnType("float");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderHeader");
+                });
+
+            modelBuilder.Entity("Project.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -322,11 +394,41 @@ namespace Project.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CategoryId = 1,
+                            Id = 100,
+                            CategoryId = 4,
+                            Description = "Comfortable cotton t-shirt",
                             ImageUrl = "/images/product/shirt.png",
                             Name = "Tshirt",
-                            Price = 0m
+                            Price = 19.99m,
+                            SpecialTag = "New"
+                        },
+                        new
+                        {
+                            Id = 101,
+                            CategoryId = 8,
+                            Description = "Warm winter jacket",
+                            ImageUrl = "/images/product/shirt.png",
+                            Name = "Jacket",
+                            Price = 49.99m,
+                            SpecialTag = "Sale"
+                        },
+                        new
+                        {
+                            Id = 102,
+                            CategoryId = 9,
+                            Description = "Stylish denim jeans",
+                            ImageUrl = "/images/product/shirt.png",
+                            Name = "Jeans",
+                            Price = 39.99m
+                        },
+                        new
+                        {
+                            Id = 103,
+                            CategoryId = 10,
+                            Description = "Classic formal trousers",
+                            ImageUrl = "/images/product/shirt.png",
+                            Name = "Trousers",
+                            Price = 29.99m
                         });
                 });
 
@@ -381,9 +483,9 @@ namespace Project.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Project.Data.Cart", b =>
+            modelBuilder.Entity("Project.Models.Cart", b =>
                 {
-                    b.HasOne("Project.Data.Product", "Product")
+                    b.HasOne("Project.Models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -400,15 +502,39 @@ namespace Project.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Project.Data.Product", b =>
+            modelBuilder.Entity("Project.Models.OrderDetail", b =>
                 {
-                    b.HasOne("Project.Data.Category", "Category")
+                    b.HasOne("Project.Models.OrderHeader", "OrderHeader")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderHeaderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Project.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderHeader");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Project.Models.Product", b =>
+                {
+                    b.HasOne("Project.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Project.Models.OrderHeader", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

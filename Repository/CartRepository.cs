@@ -63,12 +63,11 @@ namespace Project.Repository
             return cartCount;
         }
 
-        public async Task<bool> ClearCartAsync(string? userId)
+        public async Task<bool> ClearCartAsync(string? userId, int productId)
         {
             var cart = await _dbContext.Cart.Where(u => u.UserId == userId).ToListAsync();
-            _dbContext.Cart.RemoveRange(cart);
+            _dbContext.Cart.RemoveRange(cart.FirstOrDefault(c => c.ProductId == productId));
             return await _dbContext.SaveChangesAsync() > 0;
         }
-
     }
 }

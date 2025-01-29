@@ -30,5 +30,7 @@ namespace Project.Models
         [Required]
         [Display(Name = "Email")]
         public string Email { get; set; }
+
+        public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
     }
 }

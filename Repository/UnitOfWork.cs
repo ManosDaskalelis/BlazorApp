@@ -3,12 +3,12 @@ using Project.Repository.IRepository;
 
 namespace Project.Repository
 {
-    public class UnitOfWork: IUnitOfWork
+    public class _unitOfWork: IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UnitOfWork(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public _unitOfWork(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
@@ -17,6 +17,7 @@ namespace Project.Repository
         public CategoryRepository CategoryRepository => new(_context);
         public ProductRepository ProductRepository => new(_context, _webHostEnvironment);
         public CartRepository CartRepository => new(_context);
+        public OrderRepository OrderRepository => new(_context);
 
         public async Task<bool> SaveAsync()
         {

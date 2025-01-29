@@ -24,7 +24,7 @@ namespace Project
             builder.Services.AddScoped<IdentityUserAccessor>();
             builder.Services.AddScoped<IdentityRedirectManager>();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IUnitOfWork, _unitOfWork>();
             builder.Services.AddSingleton<StateService>();
 
             builder.Services.AddAuthentication(options =>

@@ -1,0 +1,109 @@
+﻿ @page "/category"
+@inject IUnitOfWork _unitOfWork
+@inject IJSRuntime _JS
+@inject NavigationManager _navigationManager
+
+<BsModal ButtonBootstrapStyle="btn-danger" ButtonText="Delete" Title="Are you sure you want to delete this Category?" OnModalConfirm="ConfirmDelete"></BsModal>
+
+@if (isProcessing)
+{
+    <div class="position-absolute w-75 h-75 d-flex flex-column align-items-center bg-white justify-content-center">
+        <img src="/images/loading.gif" alt="loading" />
+    </div>
+}
+else
+{
+    <div class="card m-4 border-0 shadow">
+        <div class="card-header ml-0 py-3" style="background-color: #0d1b2a; color: #ffc300; font-weight: bold; padding: 1rem; font-size: 1.5rem; border-bottom: 2px solid #ffc300; text-align: center;">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white py-2">Category List</h2>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-4">
+            <div class="row pb-3">
+                <div class="col-12 text-end">
+                    <a href="category/create" class="btn btn-lg btn-secondary" style="width:250px;">
+                        <i class="bi bi-plus-square"></i> Add New Category
+                    </a>
+                </div>
+            </div>
+            @if (Categories.Any())
+            {
+                <table class="table-bordered table-striped table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cat in Categories)
+                        {
+                            <tr>
+                                <td>
+                                    @cat.Name
+                                </td>
+                                <td>
+                                    <a href="@($"category/update/{cat.Id}")" class="btn btn-primary">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </a>
+                                    <a class="btn btn-danger" @onclick="() => HandleDelete(cat.Id)">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private bool isProcessing { get; set; } = true;
+    private int DeleteCategoryId { get; set; } = 0;
+    private IEnumerable<Category> Categories { get; set; } = new List<Category>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadCategories();
+            isProcessing = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadCategories()
+    {
+        Categories = await _unitOfWork.CategoryRepository.GetAllAsync();
+    }
+
+    private void HandleDelete(int id)
+    {
+        DeleteCategoryId = id;
+        _JS.InvokeVoidAsync("ShowConfirmationModal");
+    }
+
+    private async Task ConfirmDelete(bool isConfirmed)
+    {
+        isProcessing = true;
+        await _JS.InvokeVoidAsync("HideConfirmationModal");
+        if (isConfirmed && DeleteCategoryId != 0)
+        {
+            var result = await _unitOfWork.CategoryRepository.DeleteAsync(DeleteCategoryId);
+            if (result)
+                _JS?.ToastrSuccess("Category Delete Successfully");
+            else
+                _JS?.ToastrError("Error Encountered while deleting");
+
+            await LoadCategories();
+        }
+
+        DeleteCategoryId = 0;
+        isProcessing = false;
+    }
+}
