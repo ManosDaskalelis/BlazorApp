@@ -24,8 +24,11 @@ namespace Project.Data
                 new Category { Id = 4, Name = "Trousers" }
                 );
             builder.Entity<Product>().HasData(
-               new Product { Id = 1, Name = "Tshirt", CategoryId = 1, ImageUrl = "/images/product/shirt.png" }
-               );
+                new Product { Id = 100, Name = "Tshirt", CategoryId = 4, ImageUrl = "/images/product/shirt.png", Price = 19.99m, SpecialTag = "New", Description = "Comfortable cotton t-shirt" },
+                new Product { Id = 101, Name = "Jacket", CategoryId = 8, ImageUrl = "/images/product/shirt.png", Price = 49.99m, SpecialTag = "Sale", Description = "Warm winter jacket" },
+                new Product { Id = 102, Name = "Jeans", CategoryId = 9, ImageUrl = "/images/product/shirt.png", Price = 39.99m, Description = "Stylish denim jeans" },
+                new Product { Id = 103, Name = "Trousers", CategoryId = 10, ImageUrl = "/images/product/shirt.png", Price = 29.99m, Description = "Classic formal trousers" }
+            );
         }
     }
 }

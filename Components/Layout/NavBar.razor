@@ -1,11 +1,15 @@
-﻿<nav class="navbar navbar-expand-md navbar-dark bg-dark pb-4 pt-4">
+﻿@inject StateService _stateService
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject IUnitOfWork _unitOfWork
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark pb-4 pt-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="">
             <img src="/images/icons8-clothes-48.png" alt="Bootstrap" width="30" height="24">
             Fashion
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
-                aria-controls="navbarCollapse" aria-label="Toggle navigation">
+        aria-controls="navbarCollapse" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -20,7 +24,7 @@
                         <span class="bi bi-cart2" aria-hidden="true"></span> Cart
                     </NavLink>
                 </li>
-                 <li class="nav-item mx-2">
+                <li class="nav-item mx-2">
                     <NavLink class="nav-link" href="/order/list">
                         <span class="bi bi-card-list" aria-hidden="true"></span> Order List
                     </NavLink>
@@ -61,3 +65,16 @@
         </div>
     </div>
 </nav>
+
+@code {
+    protected override void OnInitialized()
+    {
+        _stateService.OnChange += OnStateChanged;
+    }
+
+    private void OnStateChanged()
+    {
+        StateHasChanged();
+    }
+
+}
