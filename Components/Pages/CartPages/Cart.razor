@@ -5,7 +5,7 @@
 @inject IUnitOfWork _unitOfWork;
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject NavigationManager _navigationManager
-
+@inject StateService _stateService
 
 @attribute [Authorize]
 @if (IsProcessing)
@@ -169,7 +169,7 @@ else
     private async Task UpdateCart(int productId, int updateCount)
     {
         var result = await _unitOfWork.CartRepository.UpdateCartAsync(OrderHeader.UserId, productId, updateCount);
-
+        _stateService.TotalCartCount = await _unitOfWork.CartRepository.GetTotalCountAsync(OrderHeader.UserId);
         var total = await _unitOfWork.CartRepository.GetAllAsync(OrderHeader.UserId);
 
         foreach (var item in total)
@@ -191,6 +191,7 @@ else
     private async Task ClearCart(int productId)
     {
         var result = await _unitOfWork.CartRepository.ClearCartAsync(OrderHeader.UserId, productId);
+        _stateService.TotalCartCount = await _unitOfWork.CartRepository.GetTotalCountAsync(OrderHeader.UserId);
         await LoadCart();
     }
 
