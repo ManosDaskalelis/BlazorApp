@@ -21,7 +21,7 @@
                 </li>
                 <li class="nav-item mx-2">
                     <NavLink class="nav-link" href="/cart">
-                        <span class="bi bi-cart2" aria-hidden="true"></span> Cart
+                        <span class="bi bi-cart2" aria-hidden="true"></span> Cart (@_stateService.TotalCartCount)
                     </NavLink>
                 </li>
                 <li class="nav-item mx-2">
@@ -70,11 +70,24 @@
     protected override void OnInitialized()
     {
         _stateService.OnChange += OnStateChanged;
+        GetCount();
     }
 
     private void OnStateChanged()
     {
-        StateHasChanged();
+        InvokeAsync(StateHasChanged);
     }
 
+    public async Task GetCount() 
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        _stateService.TotalCartCount = await _unitOfWork.CartRepository.GetTotalCountAsync(user?.FindFirst(u => u.Type.Contains("nameidentifier"))?.Value);
+    }
+
+    public void Dispose()
+    {
+        _stateService.OnChange -= OnStateChanged;
+    }
 }
