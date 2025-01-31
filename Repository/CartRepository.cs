@@ -7,7 +7,7 @@ namespace Project.Repository
 {
     public class CartRepository : ICartRepository
     {
-        private ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public CartRepository(ApplicationDbContext dbContext)
         {

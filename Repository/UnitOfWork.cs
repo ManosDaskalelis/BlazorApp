@@ -3,12 +3,12 @@ using Project.Repository.IRepository;
 
 namespace Project.Repository
 {
-    public class _unitOfWork: IUnitOfWork
+    public class UnitOfWork: IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public _unitOfWork(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public UnitOfWork(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
