@@ -103,8 +103,9 @@ else
         {
             await LoadProducts();
             IsProcessing = false;
-            StateHasChanged();
         }
+            StateHasChanged();
+
     }
 
     private async Task LoadProducts()
