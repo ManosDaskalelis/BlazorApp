@@ -97,15 +97,11 @@ else
     private int catId = 0;
     private string searchInput = "";
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        if (firstRender)
-        {
             await LoadProducts();
             IsProcessing = false;
-        }
             StateHasChanged();
-
     }
 
     private async Task LoadProducts()
