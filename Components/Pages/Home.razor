@@ -8,7 +8,7 @@
 @inject StateService _StateService
 <PageTitle>Home</PageTitle>
 
-@if (!IsProcessing)
+@if (IsProcessing)
 {
     <div class="position-absolute w-100 vh-100 d-flex flex-column align-items-center bg-white justify-content-center">
         <img src="/images/loading.gif" alt="loading" />
