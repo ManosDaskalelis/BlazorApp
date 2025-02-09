@@ -99,9 +99,8 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(firstRender && !IsProcessing)
+        if(firstRender)
         {
-            IsProcessing = true;
             await LoadProducts();
             IsProcessing = false;
             StateHasChanged();
