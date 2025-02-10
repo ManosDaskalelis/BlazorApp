@@ -3,52 +3,47 @@ name: Build, Test, and Deploy .NET 8 Project
 on:
   push:
     branches: [ "main" ]
-  pull_request:
 
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: List Installed .NET SDKs
-        run: dotnet --list-sdks
-
-      - name: Setup .NET SDK (Ensure .NET 8.0)
+      - name: Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
 
-      - name: Verify Installed .NET Version
-        run: dotnet --version
-
-      - name: Build Project
+      - name: Build
         run: dotnet build --configuration Release
 
-      - name: Run Tests
+      - name: Test
         run: dotnet test --no-build --verbosity normal
 
-      - name: Publish Project
+      - name: Publish
         run: dotnet publish -c Release -o ./publish
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: BlazorAppRG            
+          app-name: BlazorAppRG
           slot-name: production
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./publish
 
-      - name: Azure CLI - Configure Connection String
+      - name: Azure Login using Publish Profile
+        uses: azure/login@v1
+        with:
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+
+      - name: Configure Connection String (Azure CLI)
         uses: azure/cli@v1
         with:
           inlineScript: |
             az webapp config connection-string set \
               --resource-group BlazorAppRG_group \
               --name BlazorAppRG \
-              --settings DefaultConnection="tcp:blazorappserver1.database.windows.net,1433;Initial Catalog=BlazorAppDB;Persist Security Info=False;User ID=${{ secrets.SQL_SERVER_USERNAME }};Password=${{ secrets.SQL_SERVER_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
+              --settings DefaultConnection="Server=tcp:blazorappserver1.database.windows.net,1433;Database=BlazorAppDB;User ID=${{ secrets.SQL_SERVER_USERNAME }};Password=${{ secrets.SQL_SERVER_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
               --connection-string-type SQLAzure
-        env:
-          AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
