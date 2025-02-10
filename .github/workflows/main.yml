@@ -3,26 +3,31 @@ name: Build, Test, and Deploy .NET 8 Project
 on:
   push:
     branches: [ "main" ]
+  pull_request:
 
 jobs:
   build-test-deploy:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Setup .NET SDK
+      - name: Setup .NET (8.0)
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
 
-      - name: Build
+      - name: List Installed .NET SDKs
+        run: dotnet --list-sdks
+
+      - name: Build Project
         run: dotnet build --configuration Release
 
-      - name: Test
+      - name: Run Tests
         run: dotnet test --no-build --verbosity normal
 
-      - name: Publish
+      - name: Publish Project
         run: dotnet publish -c Release -o ./publish
 
       - name: Deploy to Azure WebApp
@@ -33,12 +38,12 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./publish
 
-      - name: Azure Login using Publish Profile
-        uses: azure/login@v1
+      - name: Azure Login with Publish Profile
+        uses: azure/login@v1.4.0
         with:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
 
-      - name: Configure Connection String (Azure CLI)
+      - name: Configure Connection String
         uses: azure/cli@v1
         with:
           inlineScript: |
