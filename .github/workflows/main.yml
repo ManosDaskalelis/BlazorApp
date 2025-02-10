@@ -2,21 +2,23 @@ name: Build, Test, and Deploy .NET 8 Project
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
 
 jobs:
-  check-and-setup-sdk:
+  build-test-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # 2. List installed .NET SDKs (optional)
       - name: List Installed .NET SDKs
         run: dotnet --list-sdks
 
+      # 3. Setup .NET 8.0 SDK
       - name: Setup .NET SDK (Ensure .NET 8.0)
         uses: actions/setup-dotnet@v3
         with:
@@ -25,19 +27,36 @@ jobs:
       - name: Verify Installed .NET Version
         run: dotnet --version
 
+      # 4. Build the project
       - name: Build Project
         run: dotnet build --configuration Release
 
+      # 5. Run tests
       - name: Run Tests
         run: dotnet test --no-build --verbosity normal
 
+      # 6. Publish (produce a folder ready for deployment)
       - name: Publish Project
         run: dotnet publish -c Release -o ./publish
 
-      - name: Deploy to Azure
+      # 7. Deploy to Azure WebApp using publish profile (stored as a secret)
+      - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: BlazorAppRG     # Replace with your Azure App Service name
+          app-name: BlazorAppRG              # Replace with your actual App Service name
           slot-name: production
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ./publish
+
+      # 8. [Optional but recommended] Configure your connection string securely
+      - name: Azure CLI - Configure Connection String
+        uses: azure/cli@v1
+        with:
+          inlineScript: |
+            az webapp config connection-string set \
+              --resource-group <YOUR_RESOURCE_GROUP> \
+              --name BlazorAppRG \
+              --settings DefaultConnection="tcp:blazorappserver1.database.windows.net,1433;Initial Catalog=BlazorAppDB;Persist Security Info=False;User ID=${{ secrets.SQL_SERVER_USERNAME }};Password=${{ secrets.SQL_SERVER_PASSWORD }};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
+              --connection-string-type SQLAzure
+        env:
+          AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
