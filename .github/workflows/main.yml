@@ -10,52 +10,34 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # 1. Check out your code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 2. Set up the .NET 8 SDK
       - name: Setup .NET (8.0)
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
 
-      # 3. (Optional) Show installed .NET SDKs
       - name: List Installed .NET SDKs
         run: dotnet --list-sdks
 
-      # 4. Build your project
       - name: Build Project
         run: dotnet build --configuration Release
 
-      # 5. Run tests
       - name: Run Tests
         run: dotnet test --no-build --verbosity normal
 
-      # 6. Publish (create a folder ready to deploy)
       - name: Publish Project
         run: dotnet publish -c Release -o ./publish
 
-      # 7. Deploy to Azure WebApp using your publish profile secret
-      - name: Deploy to Azure WebApp
+      - name: Deploy and Configure
         uses: azure/webapps-deploy@v2
         with:
           app-name: BlazorAppRG
           slot-name: production
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} 
           package: ./publish
-
-      # 8. Azure Login using publish profile (correctly via creds + auth-type)
-      - name: Azure Login with Publish Profile
-        uses: azure/login@v1.4.0
-        with:
-          auth-type: publishProfile
-          creds: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-
-      # 9. Configure the SQL connection string in your App Service via az CLI
-      - name: Configure Connection String
-        uses: azure/cli@v1
-        with:
+          command: inlineScript
           inlineScript: |
             az webapp config connection-string set \
               --resource-group BlazorAppRG_group \
