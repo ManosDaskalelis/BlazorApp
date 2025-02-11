@@ -35,10 +35,12 @@ else
                     </div>
 
                     <div class="form-floating py-3 col-12">
-                        <InputText @bind-Value="Product.Description" class="form-control" id="Description" placeholder="Description" />
                         <label for="Description">Description</label>
+                        <Editor Id="Description" @bind-Value="Product.Description" Field="@(() => Product.Description)"/>
                         <ValidationMessage For="@(() => Product.Description)" />
                     </div>
+                        @* <InputText @bind-Value="Product.Description" class="form-control" id="Description" placeholder="Description" /> *@
+
 
                     <div class="form-floating py-3 col-12">
                         <InputText @bind-Value="Product.SpecialTag" class="form-control" id="SpecialTag" placeholder="SpecialTag" />
