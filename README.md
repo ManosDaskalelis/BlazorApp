@@ -34,7 +34,6 @@ Ensure you have the following installed before running the project:
 ### 1. Clone the Repository
 ```sh
 git clone <repository_url>
-cd blazor-eshop
 ```
 
 ### 2. Configure Database
