@@ -56,7 +56,7 @@ Execute the following command to start the Blazor server:
 ```sh
 dotnet run
 ```
-The application will be available at `https://localhost:5001` or `http://localhost:5000`.
+The application will be available at `https://localhost:7038` or `http://localhost:5094`.
 
 ---
 
